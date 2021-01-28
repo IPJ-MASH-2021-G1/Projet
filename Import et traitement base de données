@@ -27,3 +27,40 @@ df <- separate(df, `Engagements L. 33-13 et AMEL`,
 df$is_AMII<-df$Dispositif == "AMII"
 df$is_AMII[is.na(df$is_AMII)] = FALSE
 df$is_AMII<-as.numeric(df$is_AMII)
+
+#Importation fichier entreprises
+dfe <- read_csv("Entreprises.csv")
+dfe<- dfe[-c(1)]
+
+new_df0 = merge(df, dfe, by.x = "Code commune", by.y ="COM" )
+
+#Importation fichier avec pop, superficie, etc
+dfc = read_csv2("base_comp.csv",skip = 5)#base comp = new name base comaparateur cc
+dfc<- dfc[c(1,5,7,20,22,27)]
+new_df = merge(new_df0,dfc,by.x = "Code commune", by.y ="CODGEO" )
+
+
+
+# Créer un nouveau dataframe pour réaliser la regression logistique
+df1<-df[c(5,6,7,8,13,14,27)]
+
+#Réaliser la matrice de corrélation
+cor(df1,method="pearson")
+
+cor(df,method="pearson")
+df1<-df[c(5,6,8,13,14,27)]
+df1$is_AMII<-as.logical(df1$is_AMII)
+#Regression logistique
+
+# split entre train et test 
+
+set.seed(123)
+training.samples <- df1$is_AMII %>% createDataPartition(p = 0.8, list = FALSE)
+train.data  <- df1[training.samples, ]
+test.data <- df1[-training.samples, ]
+
+#Choisir le modèle 
+model <- glm( is_AMII ~., data = df1, family = binomial)
+
+# Summarize the model
+summary(model)
