@@ -1,0 +1,40 @@
+library(readr)
+library(tidyverse)
+library(ggplot2)
+#Veuillez telecharger dataCommunes avant de lancer ce script, il est sur le github
+df <- read_csv("dataCommunes.csv", 
+                         locale = locale(encoding = "ISO-8859-1"), 
+                         na= '-', skip = 4)
+
+#supprimer les colonnes inutiles
+df<- df[-c(5,8,9,28,29,30)]
+
+#Changer les NA en 0
+df$Logements[is.na(df$`Logements`)] = 0
+df$Établissements[is.na(df$Établissements)] = 0
+df$`Meilleure estimation des locaux à date`[is.na(df$`Meilleure estimation des locaux à date`)] = 0
+df$`Intentions privées hors engagement L. 33-13`[is.na(df$`Intentions privées hors engagement L. 33-13`)]=FALSE
+df$`Zones très denses`[is.na(df$`Zones très denses`)] = 0
+df$`Commune rurale`[is.na(df$`Commune rurale`)] = 0
+df$`Commune de montagne`[is.na(df$`Commune de montagne`)] = 0
+
+#Separer dispositif etc 
+df <- separate(df, `Engagements L. 33-13 et AMEL`,
+               sep ="[\\(\\)]",
+               into = c("Operateur","Dispositif","Pourcentage_couverture"))
+
+##ajouter un test pour sélectionner les communes AMII 
+df$is_AMII<-df$Dispositif == "AMII"
+df$is_AMII[is.na(df$is_AMII)] = FALSE
+df$is_AMII<-as.numeric(df$is_AMII)
+
+#Importation fichier entreprises
+dfe <- read_csv("Entreprises.csv")
+dfe<- dfe[-c(1)]
+
+new_df0 = merge(df, dfe, by.x = "Code commune", by.y ="COM" )
+
+#Importation fichier avec pop, superficie, etc
+dfc = read_csv2("base_comp.csv",skip = 5)#base comp = new name base comaparateur cc
+dfc<- dfc[c(1,5,7,20,22,27)]
+new_df = merge(new_df0,dfc,by.x = "Code commune", by.y ="CODGEO" )
