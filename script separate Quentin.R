@@ -14,7 +14,6 @@ base_donnees$`Commune rurale`[is.na(base_donnees$`Commune rurale`)] = 0
 base_donnees$`Commune de montagne`[is.na(base_donnees$`Commune de montagne`)] = 0
 
 ##ajouter un test pour sélectionner les communes AMII 
-df %>% mutate(is_AMII = (df$Dispositif == "AMII")) %>% view()
 df$is_AMII<-df$Dispositif == "AMII"
 df$is_AMII[is.na(df$is_AMII)] = FALSE
 df$is_AMII<-as.numeric(df$is_AMII)
