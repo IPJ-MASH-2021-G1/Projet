@@ -64,3 +64,9 @@ model <- glm( is_AMII ~., data = df1, family = binomial)
 
 # Summarize the model
 summary(model)
+
+# Make predictions
+probabilities <- model %>% predict(test.data, type = "response")
+predicted.classes <- ifelse(probabilities > 0.5, TRUE, FALSE)
+# Model accuracy
+mean(predicted.classes == test.data$is_AMII)
