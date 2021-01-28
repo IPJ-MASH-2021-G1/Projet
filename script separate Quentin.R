@@ -12,3 +12,6 @@ base_donnees <- separate(base_donnees, `Engagements L. 33-13 et AMEL`,
 base_donnees$`Zones très denses`[is.na(base_donnees$`Zones très denses`)] = 0
 base_donnees$`Commune rurale`[is.na(base_donnees$`Commune rurale`)] = 0
 base_donnees$`Commune de montagne`[is.na(base_donnees$`Commune de montagne`)] = 0
+
+##ajouter un test pour sélectionner les communes AMII (pas encore efficace à 100%)
+base_donnees %>% mutate(is_AMII = (base_donnees$Dispositif == "AMII")) %>% view()
