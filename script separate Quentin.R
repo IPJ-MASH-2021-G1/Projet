@@ -13,5 +13,8 @@ base_donnees$`Zones très denses`[is.na(base_donnees$`Zones très denses`)] = 0
 base_donnees$`Commune rurale`[is.na(base_donnees$`Commune rurale`)] = 0
 base_donnees$`Commune de montagne`[is.na(base_donnees$`Commune de montagne`)] = 0
 
-##ajouter un test pour sélectionner les communes AMII (pas encore efficace à 100%)
-base_donnees %>% mutate(is_AMII = (base_donnees$Dispositif == "AMII")) %>% view()
+##ajouter un test pour sélectionner les communes AMII 
+df %>% mutate(is_AMII = (df$Dispositif == "AMII")) %>% view()
+df$is_AMII<-df$Dispositif == "AMII"
+df$is_AMII[is.na(df$is_AMII)] = FALSE
+df$is_AMII<-as.numeric(df$is_AMII)
