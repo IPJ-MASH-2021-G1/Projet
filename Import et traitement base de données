@@ -22,3 +22,8 @@ df$`Commune de montagne`[is.na(df$`Commune de montagne`)] = 0
 df <- separate(df, `Engagements L. 33-13 et AMEL`,
                sep ="[\\(\\)]",
                into = c("Operateur","Dispositif","Pourcentage_couverture"))
+
+##ajouter un test pour sélectionner les communes AMII 
+df$is_AMII<-df$Dispositif == "AMII"
+df$is_AMII[is.na(df$is_AMII)] = FALSE
+df$is_AMII<-as.numeric(df$is_AMII)
