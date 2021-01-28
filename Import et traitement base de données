@@ -44,30 +44,57 @@ new_df = merge(new_df0,dfc,by.x = "Code commune", by.y ="CODGEO" )
 
 
 # Créer un nouveau dataframe pour réaliser la regression logistique
-df1<-df[c(5,6,7,8,13,14,27)]
+df1<-df[c(5,6,7,8,13,14,27)] #AMII
+df2 <- df[c(5,6,7,8,13,14,28)] #AMEL
 
 #Réaliser la matrice de corrélation
 cor(df1,method="pearson")
+cor(df2,method="pearson")
+
 
 #On enlève les colonnes trop corrélée!
-df1<-df[c(5,6,8,13,14,27)]
+
+df1 <- df[c(5,6,8,13,14,27)] #AMII
+df2 <- df[c(5,6,8,13,14,28)] #AMEL
+
 df1$is_AMII<-as.logical(df1$is_AMII)
+
+
+# df2$is_AMEL<-as.logical(df2$is_AMEL)
+
+
 #Regression logistique
 
 # split entre train et test 
 
+#AMII
 set.seed(123)
 training.samples <- df1$is_AMII %>% createDataPartition(p = 0.8, list = FALSE)
 train.data  <- df1[training.samples, ]
 test.data <- df1[-training.samples, ]
 
+#AMEL
+set.seed(123)
+training.samples <- df2$is_AMEL %>% createDataPartition(p = 0.8, list = FALSE)
+train.data  <- df2[training.samples, ]
+test.data <- df2[-training.samples, ]
+
 #Choisir le modèle 
 model <- glm( is_AMII ~., data = df1, family = binomial)
+model2 <- glm( is_AMEL ~., data = df2, family = binomial)
 
 # Summarize the model
 summary(model)
+summary(model2)
 # Make predictions
 probabilities <- model %>% predict(test.data, type = "response")
 predicted.classes <- ifelse(probabilities > 0.5, TRUE, FALSE)
 # Model accuracy
 mean(predicted.classes == test.data$is_AMII)
+
+#Standardisation/normalisation
+new_df$Logements_n <- scale(new_df$Logements)
+new_df$Etablissements_n <- scale(new_df$Établissements)
+new_df$n_norm <- scale(new_df$n)
+
+cor(new_df$n_norm,new_df$Etablissements_n)
