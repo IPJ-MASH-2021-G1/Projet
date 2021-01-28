@@ -47,7 +47,7 @@ df1<-df[c(5,6,7,8,13,14,27)]
 #Réaliser la matrice de corrélation
 cor(df1,method="pearson")
 
-cor(df,method="pearson")
+#On enlève les colonnes trop corrélée!
 df1<-df[c(5,6,8,13,14,27)]
 df1$is_AMII<-as.logical(df1$is_AMII)
 #Regression logistique
@@ -64,7 +64,6 @@ model <- glm( is_AMII ~., data = df1, family = binomial)
 
 # Summarize the model
 summary(model)
-
 # Make predictions
 probabilities <- model %>% predict(test.data, type = "response")
 predicted.classes <- ifelse(probabilities > 0.5, TRUE, FALSE)
