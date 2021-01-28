@@ -1,0 +1,23 @@
+library(readr)
+library(tidyverse)
+library(ggplot2)
+df <- read_csv("dataCommunes.csv", 
+                         locale = locale(encoding = "ISO-8859-1"), 
+                         na= '-', skip = 4)
+
+#supprimer les colonnes inutiles
+df<- df[-c(5,8,9,28,29,30)]
+
+#Changer les NA en 0
+df$Logements[is.na(df$`Logements`)] = 0
+df$Établissements[is.na(df$Établissements)] = 0
+df$`Meilleure estimation des locaux à date`[is.na(df$`Meilleure estimation des locaux à date`)] = 0
+df$`Intentions privées hors engagement L. 33-13`[is.na(df$`Intentions privées hors engagement L. 33-13`)]=FALSE
+df$`Zones très denses`[is.na(df$`Zones très denses`)] = 0
+df$`Commune rurale`[is.na(df$`Commune rurale`)] = 0
+df$`Commune de montagne`[is.na(df$`Commune de montagne`)] = 0
+
+#Separer dispositif etc 
+df <- separate(df, `Engagements L. 33-13 et AMEL`,
+               sep ="[\\(\\)]",
+               into = c("Operateur","Dispositif","Pourcentage_couverture"))
