@@ -1,6 +1,7 @@
 library(readr)
 library(tidyverse)
 library(ggplot2)
+#Veuillez telecharger dataCommunes avant de lancer ce script, il est sur le github
 df <- read_csv("dataCommunes.csv", 
                          locale = locale(encoding = "ISO-8859-1"), 
                          na= '-', skip = 4)
